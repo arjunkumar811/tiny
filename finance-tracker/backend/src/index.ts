@@ -1,16 +1,16 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import authRoutes from './routes/auth';
+import transactionRoutes from './routes/transactions';
 
 const app = new Hono();
 
-// CORS configuration
 app.use('/*', cors({
   origin: ['http://localhost:3000'],
   credentials: true,
 }));
 
-// Health check
 app.get('/', (c) => {
   return c.json({ 
     message: 'Finance Tracker API',
@@ -19,10 +19,12 @@ app.get('/', (c) => {
   });
 });
 
-// API routes will be added here
 app.get('/api/health', (c) => {
   return c.json({ status: 'ok' });
 });
+
+app.route('/api/auth', authRoutes);
+app.route('/api/transactions', transactionRoutes);
 
 const port = parseInt(process.env.PORT || '3001');
 
